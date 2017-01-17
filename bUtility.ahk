@@ -1,14 +1,14 @@
 
 windowKeySend = 
-windowBaram = ë°”ëŒì˜ë‚˜ë¼
-windowBaram = ì œëª© ì—†ìŒ - ë©”ëª¨ì¥
+windowBaram = ¹Ù¶÷ÀÇ³ª¶ó
+windowBaram = Á¦¸ñ ¾øÀ½ - ¸Ş¸ğÀå
 bRepeatHeal =
 windowAttacker =
 windowHealer =
 tooltip, Press ScrollLock On Attacker Window
 
 
-#ifwinactive ë°”ëŒì˜ë‚˜ë¼
+#ifwinactive ¹Ù¶÷ÀÇ³ª¶ó
 
 ScrollLock::
 if(windowAttacker = "")
@@ -26,7 +26,7 @@ if(windowHealer = "")
 return
 
 `::
-macroText := "tab : í‚¤ì „ì†¡ ì°½ ì „í™˜|1 : ì²´ë°€ê¸°|2 : ìí,ëª…ìƒ|3 : ë§Œê³µ|4 : ë„ì‚¬ ë§ˆë²•|F9 : ë§¤í¬ë¡œì¢…ë£Œ" ; |ë¡œ êµ¬ë¶„. 10ê°œê¹Œì§€ ê°€ëŠ¥
+macroText := "tab : Å°Àü¼Û Ã¢ ÀüÈ¯|1 : Ã¼¹Ğ±â|2 : ÀÚÈú,¸í»ó|3 : ¸¸°ø|4 : µµ»ç ¸¶¹ı|F9 : ¸ÅÅ©·ÎÁ¾·á" ; |·Î ±¸ºĞ. 10°³±îÁö °¡´É
 StringSplit, text, macroText, |
 tooltiptext = esc : cancel
 i = 1
@@ -80,14 +80,14 @@ else if(inputKey = 2)
 	else
 	{
 		nHealerHeal = 5
-		nMeditation = 10000 ; ëª…ìƒ
+		nMeditation = 10000 ; ¸í»ó
 	}
 }
-else if(inputKey = 3) ; ë§Œê³µ
+else if(inputKey = 3) ; ¸¸°ø
 {
 	ControlSend, , 7, ahk_id %windowHealer%
 }
-else if(inputKey = 4) ; ë„ì‚¬ ë§ˆë²•
+else if(inputKey = 4) ; µµ»ç ¸¶¹ı
 {
 	gosub, HealerMagic
 }
@@ -139,7 +139,7 @@ return
 
 ToggleKeySendWindow:
 windowKeySend = %windowHealer%
-msg := "`n`n" . windowKeySend . " ì „ì†¡ì¤‘(esc : ì¢…ë£Œ)`n`n "
+msg := "`n`n" . windowKeySend . " Àü¼ÛÁß(esc : Á¾·á)`n`n "
 ToolTip, %msg%
 Loop
 {
@@ -199,7 +199,7 @@ SendHotkey( keySend )
 }
 
 HealerMagic:
-msg := "`n`nì‚¬ìš©í•  ë§ˆë²•ì„ ì…ë ¥`n`n "
+msg := "`n`n»ç¿ëÇÒ ¸¶¹ıÀ» ÀÔ·Â`n`n "
 ToolTip, %msg%
 Input, inputMagic, L1, {esc}
 if inputMagic is number
