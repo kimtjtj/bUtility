@@ -1,3 +1,5 @@
+goto ExecuteRoutine
+
 @echo off
 >nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
 if '%errorlevel%' NEQ '0' (
@@ -17,6 +19,7 @@ if '%errorlevel%' NEQ '0' (
 pushd "%CD%"
     CD /D "%~dp0"
 
+:ExecuteRoutine
 
 taskkill /f /im bUtility.exe
 
