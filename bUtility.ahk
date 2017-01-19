@@ -183,9 +183,7 @@ SendHotkey( keySend )
 {
 	if( GetKeyState("CapsLock", "T") = 0 )
 	{
-		; hotkey, %keySend%, Off
 		Send, {%keySend%}
-		; Hotkey, %keySend%, On
 		return
 	}
 	else
