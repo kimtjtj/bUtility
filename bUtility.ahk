@@ -1,12 +1,30 @@
 
+ConfigFile = bUtility.ini
+
+InitConfigKey(1, KeyHeal, "KeyHeal")
+InitConfigKey(2, keyBakho, "keyBakho")
+InitConfigKey(4, keyKumkang, "keyKumkang")
+InitConfigKey(6, keyMeditation, "keyMeditation")
+InitConfigKey(7, keyMankong, "keyMankong")
+InitConfigKey(333, nHealInterval, "nHealInterval")
+
 windowKeySend = 
-windowBaram = 바람의나라
-windowBaram = 제목 없음 - 메모장
 bRepeatHeal =
 windowAttacker =
 windowHealer =
+
 tooltip, Press ScrollLock On Attacker Window
 
+InitConfigKey(value, ByRef globalVariable, key)
+{
+	global ConfigFile
+	iniread, globalVariable, %ConfigFile%, bUtility, %key%
+	if(globalVariable = "ERROR")
+	{
+		iniwrite, %value%, %ConfigFile%, bUtility, %key%
+		globalVariable = %value%
+	}
+}
 
 #ifwinactive 바람의나라
 
@@ -80,12 +98,12 @@ else if(inputKey = 2)
 	else
 	{
 		nHealerHeal = 5
-		nMeditation = 10000 ; 명상
+		nMeditation = 10000 ; 명상을 하기 위한 flag
 	}
 }
 else if(inputKey = 3) ; 만공
 {
-	ControlSend, , 7, ahk_id %windowHealer%
+	ControlSend, , %keyMankong%, ahk_id %windowHealer%
 }
 else if(inputKey = 4) ; 도사 마법
 {
@@ -98,32 +116,31 @@ return
 RepeatHeal:
 nMeditation = 0
 nMeditationCoolTime = 16000
-nHealInterval = 333
 nHealingCount := nMeditationCoolTime / nHealInterval
 While 1
 {
 	if(bRepeatHeal = "")
 		break
 	
-	ControlSend, , 14, ahk_id %windowHealer%
+	ControlSend, , %keyHeal%%keyKumkang%, ahk_id %windowHealer%
 	Sleep %nHealInterval%
 	nMeditation++
 	
 	if(nMeditation > nHealingCount)
 	{
 		nMeditation = 0
-		ControlSend, , 26, ahk_id %windowHealer%
+		ControlSend, , %keyBakho%%keyMeditation%, ahk_id %windowHealer%
 		Sleep 1200
 		nHealerHeal = 1
 	}
 	
 	if(nHealerHeal <> "")
 	{
-		ControlSend, , {esc}1{Home}{enter}, ahk_id %windowHealer%
+		ControlSend, , {esc}%keyHeal%{Home}{enter}, ahk_id %windowHealer%
 		loop %nHealerHeal%
 		{
 			Sleep 50
-			ControlSend, , 1, ahk_id %windowHealer%
+			ControlSend, , %keyheal%, ahk_id %windowHealer%
 			Sleep 50
 			ControlSend, , {enter}, ahk_id %windowHealer%
 		}
