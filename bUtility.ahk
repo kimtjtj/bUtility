@@ -6,6 +6,7 @@ InitConfigKey(2, keyBakho, "keyBakho")
 InitConfigKey(4, keyKumkang, "keyKumkang")
 InitConfigKey(6, keyMeditation, "keyMeditation")
 InitConfigKey(7, keyMankong, "keyMankong")
+InitConfigKey("", keyKwangpok, "keyKwangpok")
 InitConfigKey(333, nHealInterval, "nHealInterval")
 
 windowKeySend = 
@@ -122,7 +123,7 @@ While 1
 	if(bRepeatHeal = "")
 		break
 	
-	ControlSend, , %keyHeal%%keyKumkang%, ahk_id %windowHealer%
+	ControlSend, , %keyHeal%%keyKumkang%%keyKwangpok%, ahk_id %windowHealer%
 	Sleep %nHealInterval%
 	nMeditation++
 	
