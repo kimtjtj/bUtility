@@ -114,8 +114,6 @@ While 1
 	{
 		nMeditation = 0
 		HealerMeditation(keyBakho, keyMeditation, windowHealer)
-		if(nHealerHeal = "")
-			nHealerHeal = 1
 	}
 	
 	if(nHealerHeal <> "")
