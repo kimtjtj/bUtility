@@ -1,3 +1,5 @@
+bTabbing = 
+
 InitConfigKey(value, ByRef globalVariable, key)
 {
 	global ConfigFile
@@ -18,15 +20,19 @@ HealerHealSelf(nHealSelf, keyHeal, windowHealer)
 		ControlSend, , %keyHeal%{enter}, ahk_id %windowHealer%
 	}
 	Sleep 50
-	global bTabbing = true
+	global bTabbing
+	bTabbing = true
 	ControlSend, , {tab 2}, ahk_id %windowHealer%
 	bTabbing =
 }
 
 HealerMeditation(keyBakho, keyMeditation, windowHealer)
 {
+	global bTabbing
+	bTabbing = true
 	ControlSend, , %keyBakho%%keyMeditation%, ahk_id %windowHealer%
 	Sleep 1200
+	bTabbing =
 }
 
 SendArrowAllBaram( keyArrow, windowAttacker, windowHealer )
