@@ -70,30 +70,39 @@ SendArrowHealer(keyArrow, windowHealer)
 
 HealerMagic(inputMagic, windowHealer)
 {
-	msg := "`n`nì‚¬ìš©í•  ë§ˆë²•ì„ ì…ë ¥`nesc : ì¢…ë£Œ`n`n "
+	msg := "`n`n»ç¿ëÇÒ ¸¶¹ıÀ» ÀÔ·Â`nesc : Á¾·á`n`n "
 	ToolTip, %msg%
 	Input, inputMagic, L1, {esc}
+	
+	if(ErrorLevel = "EndKey:Escape")
+	{
+		return
+	}
+	
+	SendMagic(inputMagic, windowHealer)
+}
+
+SendMagic(inputMagic, window)
+{
 	if inputMagic is number
 	{
-		ControlSend, , %inputMagic%{enter}, ahk_id %windowHealer%
+		ControlSend, , %inputMagic%{enter}, ahk_id %window%
 		return
 	}
-	else if(ErrorLevel = "EndKey:Escape")
-	{
-		return
-	}
-	else if( GetKeyState("Shift", "P") = 1 )
+	
+	stringupper, inputMagicUpper, inputMagic
+	if( inputMagicUpper == inputMagic )
 	{
 		inputMagic := "{Shift down}" . inputMagic . "{Shift Up}"
 	}
-	ControlSend, , {shift Down}z{Shift Up}, ahk_id %windowHealer%
+	ControlSend, , {shift Down}z{Shift Up}, ahk_id %window%
 	Sleep, 100
-	ControlSend, , %inputMagic%, ahk_id %windowHealer%
+	ControlSend, , %inputMagic%, ahk_id %window%
 }
 
 ToggleKeySendWindow(windowHealer)
 {
-	msg := "`n`n" . windowHealer . " ì „ì†¡ì¤‘(esc : ì¢…ë£Œ)`n`n "
+	msg := "`n`n" . windowHealer . " Àü¼ÛÁß(esc : Á¾·á)`n`n "
 	ToolTip, %msg%
 	Loop
 	{

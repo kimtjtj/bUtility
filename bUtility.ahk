@@ -106,7 +106,7 @@ While 1
 	if(bRepeatHeal = "")
 		break
 	
-	ControlSend, , %keyHeal%%keyKumkang%%keyKwangpok%, ahk_id %windowHealer%
+	ControlSend, , {%keyHeal% DOWN}%keyKumkang%%keyKwangpok%, ahk_id %windowHealer%
 	Sleep %nHealInterval%
 	nMeditation++
 	
@@ -116,7 +116,7 @@ While 1
 		HealerMeditation(keyBakho, keyMeditation, windowHealer)
 	}
 	
-	if(nHealerHeal <> "")
+	if(nHealerHeal > 0)
 	{
 		HealerHealSelf(nHealSelf, keyHeal, windowHealer)
 		nHealerHeal = 
