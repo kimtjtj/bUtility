@@ -46,10 +46,9 @@ SendArrowAllBaram( keyArrow, windowAttacker, windowHealer )
 	}
 	else
 	{
-		SetCapsLockState, AlwaysOn
+		SetStoreCapslockMode, Off
 		SendArrowBaram(keyArrow, windowAttacker)
 		SendArrowHealer(keyArrow, windowHealer)
-		SetCapsLockState, On
 	}
 }
 
