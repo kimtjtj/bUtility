@@ -33,7 +33,7 @@ HealerMeditation(keyBakho, keyMeditation, windowHealer)
 	ControlSend, , %keyBakho%, ahk_id %windowHealer%
 	sleep 500
 	ControlSend, , %keyMeditation%, ahk_id %windowHealer%
-	Sleep 1100
+	Sleep 1200
 	bTabbing =
 }
 
