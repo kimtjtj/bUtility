@@ -91,8 +91,7 @@ SendMagic(inputMagic, window)
 		return
 	}
 	
-	stringupper, inputMagicUpper, inputMagic
-	if( inputMagicUpper == inputMagic )
+	if inputMagic is upper
 	{
 		inputMagic := "{Shift down}" . inputMagic . "{Shift Up}"
 	}
