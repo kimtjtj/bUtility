@@ -30,8 +30,10 @@ HealerMeditation(keyBakho, keyMeditation, windowHealer)
 {
 	global bTabbing
 	bTabbing = true
-	ControlSend, , %keyBakho%%keyMeditation%, ahk_id %windowHealer%
-	Sleep 1200
+	ControlSend, , %keyBakho%, ahk_id %windowHealer%
+	sleep 500
+	ControlSend, , %keyMeditation%, ahk_id %windowHealer%
+	Sleep 1100
 	bTabbing =
 }
 
