@@ -3,6 +3,8 @@
 windowAttacker =
 windowHealer =
 
+SetStoreCapslockMode, Off
+
 tooltip, Press ScrollLock On Attacker Window
 
 ConfigFile = bUtility.ini
