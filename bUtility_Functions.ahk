@@ -46,7 +46,6 @@ SendArrowAllBaram( keyArrow, windowAttacker, windowHealer )
 	}
 	else
 	{
-		SetStoreCapslockMode, Off
 		SendArrowBaram(keyArrow, windowAttacker)
 		SendArrowHealer(keyArrow, windowHealer)
 	}
@@ -93,11 +92,14 @@ SendMagic(inputMagic, window)
 	
 	if inputMagic is upper
 	{
-		inputMagic := "{Shift down}" . inputMagic . "{Shift Up}"
+		StringUpper, inputMagic, inputMagic
+		inputMagic := "+" . inputMagic
 	}
-	ControlSend, , {shift Down}z{Shift Up}, ahk_id %window%
+	setkeydelay, 10, 10
+	ControlSend, , {shift down}Z{shift up}, ahk_id %window%
 	Sleep, 100
 	ControlSend, , %inputMagic%, ahk_id %window%
+	setkeydelay
 }
 
 ToggleKeySendWindow(windowHealer)
