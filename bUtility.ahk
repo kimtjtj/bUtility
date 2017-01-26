@@ -2,6 +2,8 @@
 
 windowAttacker =
 windowHealer =
+nCurOtherHealer = 0
+listOtherHealer := Object()
 
 SetStoreCapslockMode, Off
 
@@ -19,6 +21,7 @@ InitConfigKey(7, keyMankong, "keyMankong")
 InitConfigKey("", keyKwangpok, "keyKwangpok")
 InitConfigKey(333, nHealInterval, "nHealInterval")
 InitConfigKey(3, nHealSelf, "nHealSelf")
+InitConfigKey(0, nOtherHealer, "nOtherHealer")
 
 bRepeatHeal =
 
@@ -34,9 +37,23 @@ if(windowAttacker = "")
 if(windowHealer = "")
 {
 	windowHealer := WinExist("A")
-	tooltip
+	if(nOtherHealer = 0)
+		tooltip
+	else
+		tooltip, Press ScrollLock On Other Healer Window 0
 	return
 }
+
+if(nOtherHealer <= nCurOtherHealer)
+	return
+
+listOtherHealer.insert(WinExist("A"))
+nCurOtherHealer++
+if(nOtherHealer = nCurOtherHealer)
+	tooltip
+else
+	tooltip, % "Press ScrollLock On Other Healer Window" . nCurOtherHealer
+
 return
 
 `::
@@ -78,8 +95,8 @@ else if(inputKey = 2)
 {
 	if(bRepeatHeal = "")
 	{
-		HealerHealSelf(nHealSelf, keyHeal, windowHealer)
-		HealerMeditation(keyBakho, keyMeditation, windowHealer)
+		HealerHealSelf(nHealSelf, keyHeal, windowHealer, listOtherHealer)
+		HealerMeditation(keyBakho, keyMeditation, windowHealer, listOtherHealer)
 	}
 	else
 	{
@@ -108,6 +125,12 @@ While 1
 	if(bRepeatHeal = "")
 		break
 	
+	if( GetIsTabbing() <> "")
+		continue
+	
+	keySend = {%keyHeal% DOWN}%keyKumkang%%keyKwangpok%
+	SendToOtherHealer(keySend, listOtherHealer)
+		
 	ControlSend, , {%keyHeal% DOWN}%keyKumkang%%keyKwangpok%, ahk_id %windowHealer%
 	Sleep %nHealInterval%
 	nMeditation++
@@ -115,12 +138,13 @@ While 1
 	if(nMeditation > nHealingCount)
 	{
 		nMeditation = 0
-		HealerMeditation(keyBakho, keyMeditation, windowHealer)
+		HealerMeditation(keyBakho, keyMeditation, windowHealer, listOtherHealer)
+		nHealerHeal = %nHealSelf%
 	}
 	
 	if(nHealerHeal > 0)
 	{
-		HealerHealSelf(nHealSelf, keyHeal, windowHealer)
+		HealerHealSelf(nHealSelf, keyHeal, windowHealer, listOtherHealer)
 		nHealerHeal = 
 	}
 }

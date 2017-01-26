@@ -11,30 +11,42 @@ InitConfigKey(value, ByRef globalVariable, key)
 	}
 }
 
-HealerHealSelf(nHealSelf, keyHeal, windowHealer)
+HealerHealSelf(nHealSelf, keyHeal, windowHealer, windowOtherHealer)
 {
 	ControlSend, , {esc}1{Home}{enter}, ahk_id %windowHealer%
+	SendToOtherHealer("{esc}1{Home}{enter}", windowOtherHealer)
 	loop %nHealSelf%
 	{
 		Sleep 50
 		ControlSend, , %keyHeal%{enter}, ahk_id %windowHealer%
+		SendToOtherHealer(keyHeal . "{enter}", windowOtherHealer)
 	}
 	Sleep 50
 	global bTabbing
 	bTabbing = true
 	ControlSend, , {tab 2}, ahk_id %windowHealer%
+	SendToOtherHealer("{tab 2}", windowOtherHealer)
 	bTabbing =
 }
 
-HealerMeditation(keyBakho, keyMeditation, windowHealer)
+HealerMeditation(keyBakho, keyMeditation, windowHealer, windowOtherHealer)
 {
 	global bTabbing
 	bTabbing = true
 	ControlSend, , %keyBakho%, ahk_id %windowHealer%
+	SendToOtherHealer(keyBakho, windowOtherHealer)
+
 	sleep 500
 	ControlSend, , %keyMeditation%, ahk_id %windowHealer%
+	SendToOtherHealer(keyMeditation, windowOtherHealer)
 	Sleep 1200
 	bTabbing =
+}
+
+SendToOtherHealer(keys, windowOtherHealer)
+{
+	for idx, window in windowOtherHealer
+		ControlSend, , %keys%, ahk_id %window%
 }
 
 SendArrowAllBaram( keyArrow, windowAttacker, windowHealer )
@@ -93,13 +105,20 @@ SendMagic(inputMagic, window)
 	if inputMagic is upper
 	{
 		StringUpper, inputMagic, inputMagic
-		inputMagic := "+" . inputMagic
+		inputMagic := "{shift down}" . inputMagic . "{shift up}"
 	}
-	setkeydelay, 10, 10
+	global bTabbing
+	bTabbing = true
 	ControlSend, , {shift down}Z{shift up}, ahk_id %window%
 	Sleep, 100
 	ControlSend, , %inputMagic%, ahk_id %window%
-	setkeydelay
+	bTabbing =
+}
+
+GetIsTabbing()
+{
+	global bTabbing
+	return bTabbing
 }
 
 ToggleKeySendWindow(windowHealer)
