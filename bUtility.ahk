@@ -22,6 +22,7 @@ InitConfigKey("", keyKwangpok, "keyKwangpok")
 InitConfigKey(333, nHealInterval, "nHealInterval")
 InitConfigKey(3, nHealSelf, "nHealSelf")
 InitConfigKey(0, nOtherHealer, "nOtherHealer")
+InitConfigKey("", strHealerBuff, "strHealerBuff")
 
 bRepeatHeal =
 
@@ -57,7 +58,7 @@ else
 return
 
 `::
-macroText := "tab : 키전송 창 전환|1 : 체밀기|2 : 자힐,명상|3 : 만공|4 : 도사 마법|F5 : INI 파일 다시 로드|F9 : 매크로종료" ; |로 구분. 10개까지 가능
+macroText := "tab : 키전송 창 전환|1 : 체밀기|2 : 자힐,명상|3 : 만공|4 : 도사 마법|5 : 버프|F5 : INI 파일 다시 로드|F9 : 매크로종료" ; |로 구분. 10개까지 가능
 StringSplit, text, macroText, |
 tooltiptext = esc : cancel
 i = 1
@@ -111,6 +112,10 @@ else if(inputKey = 3) ; 만공
 else if(inputKey = 4) ; 도사 마법
 {
 	HealerMagic(inputMagic, windowHealer)
+}
+else if(inputKey = 5) ; 버프
+{
+	HealerBuff(strHealerBuff, windowHealer)
 }
 macroTextEnd:
 tooltip

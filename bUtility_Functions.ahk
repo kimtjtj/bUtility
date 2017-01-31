@@ -115,6 +115,22 @@ SendMagic(inputMagic, window)
 	bTabbing =
 }
 
+HealerBuff(strHealerBuff, window)
+{
+	StringSplit, text, strHealerBuff, |
+	i = 1
+	Loop, %text0%
+	{
+		str = % text%i%
+		if(1 = InStr(str, "{") )
+			ControlSend, , %str%, ahk_id %window%
+		else
+			SendMagic(str, window)
+		i++
+	}
+
+}
+
 GetIsTabbing()
 {
 	global bTabbing
