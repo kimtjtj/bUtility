@@ -255,6 +255,9 @@ int FindPath_NoOpt( structPOSITION current, structPOSITION goal, CString wstrDAT
 	int i32Direction[ 4 ];
 	int i = 0;
 
+	if( 0 != minPath->size( ) && i32Gravity > minPath->size( ) )
+		return -1;
+
 	if( current.x == goal.x && current.y == goal.y )
 	{
 		if( 0 == minPath->size( ) || minPath->size( ) > path.size( ) )

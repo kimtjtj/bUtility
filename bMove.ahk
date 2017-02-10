@@ -42,27 +42,12 @@ else
 	ResetDirection(direction, v, x, y, currentDAT)
 	SendMove(direction, x, y, SendPreMove, SendPostMove)
 }
-	
+
 return
 
 
 !f10::
 exitapp
-
-
-; 어느맵인지 검사
-; dat 파일 있는지 검사 (없으면 복사, 기존맵과 다르면 기존dat 삭제)
-; 현재 좌표 검사
-; direction := RunWait bFindPath
-; if(direction <= 0)
-;   if(Pass) removePass
-;   else ResetDAT
-; else
-;   removeDirectionFromDAT()
-;   PreMove()
-;   move(direction)
-;   PostMove()
-
 
 ; 왕복? 순환?
 ; bMove.ini, premove, postmove
