@@ -60,8 +60,10 @@ public:
 	}
 };
 
-structPOSITION GetFromDAT( CString wstrDATFile, wchar_t* wstrKey );
-int FindPath( structPOSITION current, structPOSITION goal, CString wstrDATFile, int i32Gravity = 0 );
+structPOSITION GetFromDAT( CString wstrDATFile, wchar_t* wstrKey, wchar_t** wstrGoalDirection = NULL );
+int FindPath( structPOSITION current, structPOSITION goal, CString wstrDATFile, vector<structPOSITION>* minPath, int i32Gravity = 0 );
+int FindPath_NoOpt( structPOSITION current, structPOSITION goal, CString wstrDATFile, vector<structPOSITION>* minPath, int i32Gravity = 0 );
+int GetDirection( int i32X, int i32Y, int i32MoveToX, int i32MoveToY );
 
 int main(int argc, char* argv[])
 {
@@ -71,6 +73,8 @@ int main(int argc, char* argv[])
 	CString wstrDATFile;
 	bool bWait = false;
 	structPOSITION pass, goal;
+	static vector<structPOSITION> minPath;
+	wchar_t *wstrGoalDirection = NULL;
 
 	if( argc < i32Parameter )
 	{
@@ -94,20 +98,57 @@ int main(int argc, char* argv[])
 	pass = GetFromDAT( wstrDATFile, L"Pass" );
 
 	if( pass.IsEmpty( ) )
-		goal = GetFromDAT( wstrDATFile, L"Goal" );
+	{
+		goal = GetFromDAT( wstrDATFile, L"Goal", &wstrGoalDirection );
+	}
 	else
 		goal = pass;
 
-	i32Error = FindPath( structPOSITION( i32X, i32Y ), goal, wstrDATFile );
+	if( i32X == goal.x && i32Y == goal.y && NULL != wstrGoalDirection )
+	{
+		switch( wstrGoalDirection[ 0 ] )
+		{
+		case L'R':
+			i32Error = 1;
+			break;
+		case L'L':
+			i32Error = 2;
+			break;
+		case L'D':
+			i32Error = 3;
+			break;
+		case L'U':
+			i32Error = 4;
+			break;
+		}
+		goto Exit;
+	}
+
+	if( 0 >= FindPath( structPOSITION( i32X, i32Y ), goal, wstrDATFile, &minPath ) )
+	{
+		FindPath_NoOpt( structPOSITION( i32X, i32Y ), goal, wstrDATFile, &minPath );
+	}
+
+	if( 0 == minPath.size( ) )
+		i32Error = -1;
+	else
+		i32Error = GetDirection( i32X, i32Y, minPath[ 0 ].x, minPath[ 0 ].y );
 
 Exit:
 	if( bWait )
+	{
+		for( int i = 0; i < minPath.size( ); ++i )
+		{
+			wprintf_s( L"pos[%d] : %d, %d\n", i, minPath[ i ].x, minPath[ i ].y );
+		}
+		wprintf_s( L"i32Error : %d\n", i32Error );
 		getc( stdin );
+	}
 
 	return i32Error;
 }
 
-structPOSITION GetFromDAT( CString wstrDATFile, wchar_t* wstrKey )
+structPOSITION GetFromDAT( CString wstrDATFile, wchar_t* wstrKey, wchar_t** wstrGoalDirection )
 {
 	wchar_t strBuffer[ 16 ] = L"";
 	GetPrivateProfileString( L"Tile", wstrKey, L"", strBuffer, _countof( strBuffer ), wstrDATFile.GetString( ) );
@@ -124,6 +165,9 @@ structPOSITION GetFromDAT( CString wstrDATFile, wchar_t* wstrKey )
 	wchar_t* wstrY = wcstok_s( NULL, L"|", &next_token );
 	int y = _wtoi( wstrY );
 
+	if( NULL != wstrGoalDirection )
+		*wstrGoalDirection = wcstok_s( NULL, L"|", &next_token );
+
 	return structPOSITION( x, y );
 }
 
@@ -136,7 +180,7 @@ int GetOptimal( structPOSITION current, structPOSITION goal, int i32Gravity )
 	return i32Optimal;
 }
 
-int FindPath( structPOSITION current, structPOSITION goal, CString wstrDATFile, int i32Gravity )
+int FindPath( structPOSITION current, structPOSITION goal, CString wstrDATFile, vector<structPOSITION>* minPath, int i32Gravity )
 {
 	static vector<structPOSITION> path;
 
@@ -144,30 +188,37 @@ int FindPath( structPOSITION current, structPOSITION goal, CString wstrDATFile, 
 	CString wstrKey;
 	wchar_t wstrBuffer[ 8 ];
 	int i32Direction[ 4 ];
-	int i = 0;
+	int i = 0, i32Min = -1;
 
 	if( current.x == goal.x && current.y == goal.y )
+	{
+		if( 0 == minPath->size( ) || minPath->size( ) > path.size( ) )
+			*minPath = path;
+
 		return 0;
+	}
 
 	wstrKey.Format( L"Tile_%d_%d", current.x, current.y );
-	GetPrivateProfileString( L"Tile", wstrKey.GetString(), L"", wstrBuffer, _countof(wstrBuffer), wstrDATFile.GetString( ) );
+	GetPrivateProfileString( L"Tile", wstrKey.GetString( ), L"", wstrBuffer, _countof( wstrBuffer ), wstrDATFile.GetString( ) );
+	if( 0 == wcsncmp( wstrBuffer, L"0000", 4 ) || 0 == wcscmp(wstrBuffer, L"") )
+		return -1;
 
 	for( i = 0; i < 4; ++i )
 	{
-		i32Direction[i] = wstrBuffer[ i ] - L'0';
+		i32Direction[ i ] = wstrBuffer[ i ] - L'0';
 		if( 0 == i32Direction[ i ] )
 		{
 			ai32Optimal[ i ] = 0xffff;
 			continue;
 		}
 
-		structPOSITION next(current, i);
+		structPOSITION next( current, i );
 
 		ai32Optimal[ i ] = GetOptimal( next, goal, i32Gravity + 1 );
 		if( minOptimal > ai32Optimal[ i ] )
 			minOptimal = ai32Optimal[ i ];
 	}
-	
+
 	for( i = 0; i < 4; ++i )
 	{
 		if( minOptimal != ai32Optimal[ i ] )
@@ -188,11 +239,85 @@ int FindPath( structPOSITION current, structPOSITION goal, CString wstrDATFile, 
 
 		path.push_back( next );
 
-		if( 0 <= FindPath( next, goal, wstrDATFile, i32Gravity + 1 ) )
-			return i + 1;
-
+		FindPath( next, goal, wstrDATFile, minPath, i32Gravity + 1 );
 		path.pop_back( );
 	}
 
-	return -1;
+	return minPath->size( );
+}
+
+int FindPath_NoOpt( structPOSITION current, structPOSITION goal, CString wstrDATFile, vector<structPOSITION>* minPath, int i32Gravity )
+{
+	static vector<structPOSITION> path;
+
+	CString wstrKey;
+	wchar_t wstrBuffer[ 8 ];
+	int i32Direction[ 4 ];
+	int i = 0;
+
+	if( current.x == goal.x && current.y == goal.y )
+	{
+		if( 0 == minPath->size( ) || minPath->size( ) > path.size( ) )
+			*minPath = path;
+
+		return 0;
+	}
+
+	wstrKey.Format( L"Tile_%d_%d", current.x, current.y );
+	GetPrivateProfileString( L"Tile", wstrKey.GetString( ), L"", wstrBuffer, _countof( wstrBuffer ), wstrDATFile.GetString( ) );
+	if( 0 == wcsncmp( wstrBuffer, L"0000", 4 ) || 0 == wcscmp( wstrBuffer, L"" ) )
+		return -1;
+
+	for( i = 0; i < 4; ++i )
+	{
+		i32Direction[ i ] = wstrBuffer[ i ] - L'0';
+		if( 0 == i32Direction[ i ] )
+			continue;
+
+		structPOSITION next( current, i );
+		bool bFind = false;
+		for( auto pos : path )
+		{
+			if( pos.x == next.x && pos.y == next.y )
+			{
+				bFind = true;
+				break;
+			}
+		}
+		if( bFind )
+			continue;
+
+		path.push_back( next );
+
+		FindPath_NoOpt( next, goal, wstrDATFile, minPath, i32Gravity + 1 );
+		path.pop_back( );
+	}
+
+	return minPath->size( );
+}
+
+int GetDirection( int i32X, int i32Y, int i32MoveToX, int i32MoveToY )
+{
+	int i32DiffX = i32MoveToX - i32X;
+	int i32DiffY = i32MoveToY - i32Y;
+
+	if( 0 != i32DiffX )
+	{
+		if( 1 == i32DiffX )
+			return 1;
+
+		if( -1 == i32DiffX )
+			return 2;
+	}
+
+	if( 0 != i32DiffY)
+	{
+		if( 1 == i32DiffY )
+			return 3;
+
+		if( -1 == i32DiffY )
+			return 4;
+	}
+
+	return 0;
 }
