@@ -166,3 +166,8 @@ ToggleKeySendWindow(windowHealer)
 		ControlSend, , %keyControlSend%, ahk_id %windowHealer%
 	}
 }
+
+ControlAltShiftUp(window)
+{
+	ControlSend, , {Control Up}{Alt Up}{Shift Up}, ahk_id %window%
+}

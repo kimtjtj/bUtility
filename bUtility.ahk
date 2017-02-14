@@ -187,6 +187,30 @@ return
 SendArrowHealer("Right", windowHealer)
 return
 
+^!+Up::
+ControlAltShiftUp(windowHealer)
+SendMagic("q4{enter}", windowHealer)
+Send {shift down}z{shift up}q4{enter}
+return
+
+^!+Left::
+ControlAltShiftUp(windowHealer)
+SendMagic("q2{enter}", windowHealer)
+Send {shift down}z{shift up}q2{enter}
+return
+
+^!+Right::
+ControlAltShiftUp(windowHealer)
+SendMagic("q1{enter}", windowHealer)
+Send {shift down}z{shift up}q1{enter}
+return
+
+^!+Down::
+ControlAltShiftUp(windowHealer)
+SendMagic("q3{enter}", windowHealer)
+Send {shift down}z{shift up}q3{enter}
+return
+
 #ifwinactive
 
 
