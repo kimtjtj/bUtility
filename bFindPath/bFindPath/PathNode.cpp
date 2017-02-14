@@ -23,7 +23,7 @@ CPathNode::~CPathNode( )
 {
 }
 
-CPosition & const CPathNode::GetCurrent( )
+CPosition & CPathNode::GetCurrent( )
 {
 	return m_Current;
 }

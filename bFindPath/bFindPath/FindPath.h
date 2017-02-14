@@ -15,7 +15,7 @@ private:
 
 	vector<CPosition> m_vOptimalPath;
 	list<CPathNode> m_listPathNode;
-	list<CPosition> m_listClosed;
+	list<CPathNode> m_listClosed;
 	CString m_strDATFile;
 
 	int m_i32LastError;

@@ -17,7 +17,7 @@ public:
 	//CPathNode( CPosition& current, int i32Optimal );
 	~CPathNode( );
 
-	CPosition& const GetCurrent( );
+	CPosition& GetCurrent( );
 	vector<CPosition>& GetPath( );
 	int GetOptimal( );
 };

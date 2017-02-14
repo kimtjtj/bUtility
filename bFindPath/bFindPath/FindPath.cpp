@@ -51,7 +51,7 @@ int CFindPath::FindPath( )
 	while( 0 != m_listPathNode.size() )
 	{
 		CPathNode currentNode = m_listPathNode.front( );
-		m_listPathNode.pop_front( ); // todo 
+		m_listPathNode.pop_front( );
 
 		CPosition currentPosition = currentNode.GetCurrent( );
 		if( currentPosition == m_Goal )
@@ -84,47 +84,55 @@ int CFindPath::FindPath( )
 			CPathNode next( nextPosition, vPath, GetOptimal( nextPosition, m_Goal, vPath.size() ) );
 			int i32Optimal = next.GetOptimal( );
 
-			bool bContinue = false;
+			if( 0 == m_listPathNode.size( ) )
+			{
+				m_listPathNode.push_back( next );
+				continue;
+			}
+
+			auto lastNode = m_listPathNode.back( );
+			if( lastNode.GetOptimal( ) <= i32Optimal )
+			{
+				m_listPathNode.push_back( next );
+				continue;
+			}
+
+			bool bFind = false;
+			list<CPathNode>::iterator iterOptimal = m_listPathNode.begin( );
+
 			for( auto i = m_listPathNode.begin( ); i != m_listPathNode.end( ); ++i )
 			{
 				if( i->GetCurrent( ) == nextPosition )
 				{
-					bContinue = true;
+					bFind = true;
 					break;
 				}
+
+				if( i->GetOptimal( ) >= i32Optimal && iterOptimal == m_listPathNode.begin() )
+				{
+					iterOptimal = i;
+					continue;
+				}
 			}
-			if( true == bContinue )
+
+			if( bFind )
 				continue;
 
-			for( auto i = m_listPathNode.begin() ; i != m_listPathNode.end() ; ++i )
-			{
-				if( i->GetOptimal( ) > i32Optimal )
-				{
-					++i;
-					m_listPathNode.insert( i, next );
-					
-					bOptimal = true;
-					break;
-				}
-			}
-
-			if( false == bOptimal )
-			{
-				m_listPathNode.push_back( next );
-			}
+			m_listPathNode.insert( iterOptimal, next );
 		}
 	}
-
-
 
 	return m_i32LastError;
 }
 
 int CFindPath::GetOptimal( CPosition & current, CPosition & goal, int i32Gravity )
 {
+	int i32XDiff = abs( goal.GetX( ) - current.GetX( ) );
+	int i32YDiff = abs( goal.GetY( ) - current.GetY( ) );
+
 	int i32Optimal = i32Gravity;
-	i32Optimal += abs( goal.GetX() - current.GetX() );
-	i32Optimal += abs( goal.GetY() - current.GetY() );
+	i32Optimal += i32XDiff * i32XDiff;
+	i32Optimal += i32YDiff * i32YDiff;
 
 	return i32Optimal;
 }
