@@ -1,4 +1,5 @@
 #include bMove_Functions.ahk
+#include libArus.ahk
 
 ConfigFile = bMove.ini
 goto INILoad
@@ -10,6 +11,8 @@ InitConfigKey("", SendPostMove, "SendPostMove")
 x = 4
 y = 6
 
+filedelete, copy*.dat
+
 f1::
 Move:
 map := GetMap()
@@ -20,8 +23,17 @@ if(currentDAT != nextDAT)
 	currentDAT = %nextDAT%
 }
 
-GetCurrentPosition(x, y)
-runwait, bFindPath.exe %x% %y% %currentDAT% 1, , UseErrorLevel
+; result = GetCurrentPosition(x, y)
+result := GetCurrentPosition_ActiveWindow(x, y)
+if(result = -1)
+{
+	msgbox Cannot Find Position
+	return
+}
+; msgbox %x% %y%
+
+runwait, bFindPath.exe %x% %y% %currentDAT%, , UseErrorLevel|Hide
+; runwait, bFindPath.exe %x% %y% %currentDAT% 1, , UseErrorLevel
 direction = %ErrorLevel%
 
 if(ErrorLevel <= 0)
@@ -45,9 +57,5 @@ else
 
 return
 
-
 !f10::
 exitapp
-
-; ¿Õº¹? ¼øÈ¯?
-; bMove.ini, premove, postmove

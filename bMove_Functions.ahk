@@ -9,7 +9,6 @@ InitConfigKey(value, ByRef globalVariable, key)
 	}
 }
 
-
 GetMap()
 {
 	return "Test"
@@ -30,7 +29,7 @@ GetDATFromMap(mapName)
 
 GetCurrentPosition(ByRef x, ByRef y)
 {
-	return
+	return 0
 }
 
 GetValueFromDAT(section, key, fileDAT)
@@ -82,23 +81,25 @@ SendMove(direction, ByRef x, ByRef y, SendPreMove, SendPostMove)
 	if(direction = 1)
 	{
 		x++
+		moveKey = {Right}
 	}
 	else if(direction = 2)
 	{
 		x--
+		moveKey = {Left}
 	}
 	else if(direction = 3)
 	{
 		y++
+		moveKey = {Down}
 	}
 	else if(direction = 4)
 	{
 		y--
+		moveKey = {Up}
 	}
+	Send, %moveKey%
 	; controlsend, moveKey
 	; controlsend, SendPostMove
 	
 }
-
-; GetDirectionsFromDAT(x, y, datfile)
-; SplitDirection(direction, ref east, ref west, ref south, ref north)
