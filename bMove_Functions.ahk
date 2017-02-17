@@ -1,3 +1,6 @@
+#include gdip.ahk
+#include ImageSearch_inactive.ahk
+
 InitConfigKey(value, ByRef globalVariable, key)
 {
 	global ConfigFile
@@ -29,6 +32,12 @@ GetDATFromMap(mapName)
 
 GetCurrentPosition(ByRef x, ByRef y)
 {
+	return 0
+}
+
+GetCurrentPosition_InActiveWindow(ByRef x, ByRef y, window)
+{
+	
 	return 0
 }
 

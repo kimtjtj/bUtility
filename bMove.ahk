@@ -25,6 +25,7 @@ if(currentDAT != nextDAT)
 
 ; result = GetCurrentPosition(x, y)
 result := GetCurrentPosition_ActiveWindow(x, y)
+result := GetCurrentPosition_InActiveWindow(x, y, window)
 if(result = -1)
 {
 	msgbox Cannot Find Position
